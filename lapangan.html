@@ -52,10 +52,51 @@
 
 
         // add spotlight for the shadows
-        var spotLight = new THREE.SpotLight(0xffffff);
-        spotLight.position.set(20, 100, 30);
-        spotLight.intensity = 2;
-        scene.add(spotLight);
+        // var spotLight = new THREE.SpotLight(0xffffff);
+        // spotLight.position.set(20, 100, 30);
+        // spotLight.intensity = 2;
+        // scene.add(spotLight);
+        // add subtle ambient lighting
+
+    var ambiColor = "#1c1c1c";
+    var ambientLight = new THREE.AmbientLight(ambiColor);
+    ambientLight.intensity = 50;
+
+    scene.add(ambientLight);
+
+
+    var target = new THREE.Object3D();
+    target.position = new THREE.Vector3(5, 0, -10);
+
+
+    var pointColor = "#ff5808";
+    var directionalLight = new THREE.DirectionalLight(pointColor);
+    directionalLight.position.set(-40, 60, -10);
+    directionalLight.castShadow = true;
+    directionalLight.shadowCameraNear = 2;
+    directionalLight.shadowCameraFar = 200;
+    directionalLight.shadowCameraLeft = -50;
+    directionalLight.shadowCameraRight = 50;
+    directionalLight.shadowCameraTop = 50;
+    directionalLight.shadowCameraBottom = -50;
+
+    directionalLight.distance = 0.4;
+    directionalLight.intensity = 5;
+    directionalLight.shadowMapHeight = 1024;
+    directionalLight.shadowMapWidth = 1024;
+
+
+    scene.add(directionalLight);
+
+
+    // add a small sphere simulating the pointlight
+    var sphereLight = new THREE.SphereGeometry(10);
+    var sphereLightMaterial = new THREE.MeshBasicMaterial({color: 0xac6c25});
+    var sphereLightMesh = new THREE.Mesh(sphereLight, sphereLightMaterial);
+    sphereLightMesh.castShadow = true;
+
+    sphereLightMesh.position = new THREE.Vector3(3, 20, 3);
+    scene.add(sphereLightMesh);
 
         // add the output of the renderer to the html element
         $("#WebGL-output").append(webGLRenderer.domElement);
@@ -92,6 +133,7 @@
 
         }, 'models');
 
+        
 
 
         render();
@@ -101,9 +143,14 @@
             stats.update();
 
             if (mesh) {
-                mesh.rotation.y += 0.01;
+                // mesh.rotation.y += 0.01;
             }
+            step += 0.1;
+            sphereLightMesh.position.z += -8;
+            sphereLightMesh.position.y += +(27 * (Math.sin(step / 3)));
+            sphereLightMesh.position.x += 10 + (26 * (Math.cos(step / 3)));
 
+            directionalLight.position = sphereLightMesh.position;
 
             // render using requestAnimationFrame
             requestAnimationFrame(render);
