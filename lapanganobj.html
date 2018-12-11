@@ -3,8 +3,11 @@
 <html>
 
 <head>
-    <title>Example 08.05 - Load blender model </title>
+    <title>Example 08.07 - Load OBJ and MTL </title>
     <script type="text/javascript" src="libs/three.js"></script>
+    <script type="text/javascript" src="libs/OBJLoader.js"></script>
+    <script type="text/javascript" src="libs/MTLLoader.js"></script>
+    <script type="text/javascript" src="libs/OBJMTLLoader.js"></script>
     <script type="text/javascript" src="libs/jquery-1.9.0.js"></script>
     <script type="text/javascript" src="libs/stats.js"></script>
     <script type="text/javascript" src="libs/dat.gui.js"></script>
@@ -40,7 +43,7 @@
 
         // create a render and set the size
         var webGLRenderer = new THREE.WebGLRenderer();
-        webGLRenderer.setClearColor(new THREE.Color(0xEEEEEE, 1.0));
+        webGLRenderer.setClearColor(new THREE.Color(0xaaaaff, 1.0));
         webGLRenderer.setSize(window.innerWidth, window.innerHeight);
         webGLRenderer.shadowMapEnabled = true;
 
@@ -53,7 +56,7 @@
 
         // add spotlight for the shadows
         var spotLight = new THREE.SpotLight(0xffffff);
-        spotLight.position.set(20, 100, 30);
+        spotLight.position.set(0, 40, 30);
         spotLight.intensity = 2;
         scene.add(spotLight);
 
@@ -74,24 +77,74 @@
         var gui = new dat.GUI();
         var mesh;
 
-        var loader = new THREE.JSONLoader();
+        var loader = new THREE.OBJMTLLoader();
+        loader.addEventListener('load', function (event) {
 
-        loader.load('models/lapangan15.json', function (geometry, mat) {
+            var object = event.content;
 
-            mesh = new THREE.Mesh(geometry, new THREE.MeshFaceMaterial(mat));
+            // var wing2 = object.children[5].children[0];
+            // var wing1 = object.children[4].children[0];
 
-            mesh.scale.x = 6;
-            mesh.scale.y = 6;
-            mesh.scale.z = 6;
-            // mesh.position.x=-30;
-            // mesh.position.y=10;
-            mesh.position.z=-10;
-            // geometry.computeFaceNormals();
+            // wing1.material.alphaTest = 0.5;
+            // wing1.material.opacity = 0.6;
+            // wing1.material.transparent = true;
 
-            scene.add(mesh);	
+            // wing2.material.alphaTest = 0.4;
+            // wing2.material.opacity = 0.7;
+            // wing2.material.transparent = true;
 
-        }, 'models');
+            object.scale.set(6, 6, 6);
+            mesh = object;
+            scene.add(mesh);
 
+            // object.rotation.x = 0.2;
+            // object.rotation.y = -1.3;
+
+        });
+
+
+        loader.load('models/lapangan.obj', 'models/lapangan.mtl', {
+        	side: THREE.DoubleSide
+
+        });
+
+//                function ( geometry ) {
+//
+//
+//            geometry.morphTargets = [];
+//            geometry.morphNormals = [];
+//
+//            geometry.children.forEach(function(e) {
+//                e.morphTargets = [];
+//                e.morphNormals = [];
+//
+//                console.log(e);
+//            });
+//
+//           geometry.scale.set(200,200,200);
+////           scene.add(geometry);
+//
+//            console.log(geometry.position);
+//
+//
+////            mesh.position.x = 0;
+////            mesh.position.y = 0;
+////            mesh.position.z = 0;
+//////            mesh.rotation.x = 0;
+//////            mesh.rotation.y = 0;
+////
+////            //mesh.matrixAutoUpdate = false;
+////            // mesh.updateMatrix();
+////
+////            console.log(geometry);
+////
+////            mesh.scale.x=1;
+////            mesh.scale.y=1;
+////            mesh.scale.z=1;
+//            mesh = geometry;
+//            scene.add(mesh);
+//
+//        });
 
 
         render();
@@ -101,7 +154,7 @@
             stats.update();
 
             if (mesh) {
-                mesh.rotation.y += 0.01;
+                     mesh.rotation.y+=0.006;
             }
 
 
