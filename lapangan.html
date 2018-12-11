@@ -81,7 +81,7 @@
     directionalLight.shadowCameraBottom = -50;
 
     directionalLight.distance = 0.4;
-    directionalLight.intensity = 5;
+    directionalLight.intensity = 2;
     directionalLight.shadowMapHeight = 1024;
     directionalLight.shadowMapWidth = 1024;
 
@@ -90,7 +90,7 @@
 
 
     // add a small sphere simulating the pointlight
-    var sphereLight = new THREE.SphereGeometry(10);
+    var sphereLight = new THREE.SphereGeometry(0.1);
     var sphereLightMaterial = new THREE.MeshBasicMaterial({color: 0xac6c25});
     var sphereLightMesh = new THREE.Mesh(sphereLight, sphereLightMaterial);
     sphereLightMesh.castShadow = true;
@@ -145,10 +145,10 @@
             if (mesh) {
                 // mesh.rotation.y += 0.01;
             }
-            step += 0.1;
-            sphereLightMesh.position.z += -8;
-            sphereLightMesh.position.y += +(27 * (Math.sin(step / 3)));
-            sphereLightMesh.position.x += 10 + (26 * (Math.cos(step / 3)));
+            step += 0.08;
+            sphereLightMesh.position.z = -8;
+            sphereLightMesh.position.y = +(27 * (Math.sin(step / 3)));
+            sphereLightMesh.position.x = 10 + (26 * (Math.cos(step / 3)));
 
             directionalLight.position = sphereLightMesh.position;
 
