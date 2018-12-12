@@ -58,45 +58,45 @@
         // scene.add(spotLight);
         // add subtle ambient lighting
 
-    var ambiColor = "#1c1c1c";
-    var ambientLight = new THREE.AmbientLight(ambiColor);
-    ambientLight.intensity = 50;
+	    var ambiColor = "#1c1c1c";
+	    var ambientLight = new THREE.AmbientLight(ambiColor);
+	    ambientLight.intensity = 50;
 
-    scene.add(ambientLight);
-
-
-    var target = new THREE.Object3D();
-    target.position = new THREE.Vector3(5, 0, -10);
+	    scene.add(ambientLight);
 
 
-    var pointColor = "#ff5808";
-    var directionalLight = new THREE.DirectionalLight(pointColor);
-    directionalLight.position.set(-40, 60, -10);
-    directionalLight.castShadow = true;
-    directionalLight.shadowCameraNear = 2;
-    directionalLight.shadowCameraFar = 200;
-    directionalLight.shadowCameraLeft = -50;
-    directionalLight.shadowCameraRight = 50;
-    directionalLight.shadowCameraTop = 50;
-    directionalLight.shadowCameraBottom = -50;
-
-    directionalLight.distance = 0.4;
-    directionalLight.intensity = 2;
-    directionalLight.shadowMapHeight = 1024;
-    directionalLight.shadowMapWidth = 1024;
+	    var target = new THREE.Object3D();
+	    target.position = new THREE.Vector3(5, 0, -10);
 
 
-    scene.add(directionalLight);
+	    var pointColor = "#ff5808";
+	    var directionalLight = new THREE.DirectionalLight(pointColor);
+	    directionalLight.position.set(-40, 60, -10);
+	    directionalLight.castShadow = true;
+	    directionalLight.shadowCameraNear = 2;
+	    directionalLight.shadowCameraFar = 200;
+	    directionalLight.shadowCameraLeft = -50;
+	    directionalLight.shadowCameraRight = 50;
+	    directionalLight.shadowCameraTop = 50;
+	    directionalLight.shadowCameraBottom = -50;
+
+	    directionalLight.distance = 0.4;
+	    directionalLight.intensity = 2;
+	    directionalLight.shadowMapHeight = 1024;
+	    directionalLight.shadowMapWidth = 1024;
 
 
-    // add a small sphere simulating the pointlight
-    var sphereLight = new THREE.SphereGeometry(0.1);
-    var sphereLightMaterial = new THREE.MeshBasicMaterial({color: 0xac6c25});
-    var sphereLightMesh = new THREE.Mesh(sphereLight, sphereLightMaterial);
-    sphereLightMesh.castShadow = true;
+	    scene.add(directionalLight);
 
-    sphereLightMesh.position = new THREE.Vector3(3, 20, 3);
-    scene.add(sphereLightMesh);
+
+	    // add a small sphere simulating the pointlight
+	    var sphereLight = new THREE.SphereGeometry(0.1);
+	    var sphereLightMaterial = new THREE.MeshBasicMaterial({color: 0xac6c25});
+	    var sphereLightMesh = new THREE.Mesh(sphereLight, sphereLightMaterial);
+	    sphereLightMesh.castShadow = true;
+
+	    sphereLightMesh.position = new THREE.Vector3(3, 20, 3);
+	    scene.add(sphereLightMesh);
 
         // add the output of the renderer to the html element
         $("#WebGL-output").append(webGLRenderer.domElement);
@@ -105,14 +105,41 @@
         var step = 0;
 
 
-        // setup the control gui
-        var controls = new function () {
-            // we need the first child, since it's a multimaterial
+	    var controls = new function () {
+	        this.ambientColor = ambiColor;
+	        this.pointColor = pointColor;
+	        this.intensity = 0.5;
+	        this.distance = 0;
+	        this.debug = false;
+	        this.castShadow = true;
+	    }
+
+	    var gui = new dat.GUI();
+	    gui.addColor(controls, 'ambientColor').onChange(function (e) {
+	        ambientLight.color = new THREE.Color(e);
+	    });
+
+	    gui.addColor(controls, 'pointColor').onChange(function (e) {
+	        directionalLight.color = new THREE.Color(e);
+	    });
+
+	    gui.add(controls, 'intensity', 0, 5).onChange(function (e) {
+	        directionalLight.intensity = e;
+	    });
+
+	    gui.add(controls, 'distance', 0, 200).onChange(function (e) {
+	        directionalLight.distance = e;
+	    });
+
+	    gui.add(controls, 'debug').onChange(function (e) {
+	        directionalLight.shadowCameraVisible = e;
+	    });
+
+	    gui.add(controls, 'castShadow').onChange(function (e) {
+	        directionalLight.castShadow = e;
+	    });
 
 
-        }
-
-        var gui = new dat.GUI();
         var mesh;
 
         var loader = new THREE.JSONLoader();
@@ -134,6 +161,7 @@
         }, 'models');
 
         
+
 
 
         render();
